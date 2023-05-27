@@ -1,10 +1,4 @@
-const {
-  MalValue,
-  MalSymbol,
-  MalList,
-  MalVector,
-  MalNil,
-} = require("./types.js");
+const { MalSymbol, MalList, MalVector, MalNil } = require("./types.js");
 
 class Reader {
   constructor(tokens) {
@@ -58,7 +52,7 @@ const read_vector = (reader) => {
 const read_atom = (reader) => {
   const token = reader.next();
   if (token.match(/^-?[0-9]+$/)) {
-    return new MalValue(parseInt(token));
+    return parseInt(token);
   }
 
   if (token === "true") return true;
@@ -84,9 +78,7 @@ const read_str = (str) => {
   const tokens = tokenize(str);
   const reader = new Reader(tokens);
 
-  const form = read_form(reader);
-  console.log(form);
-  return form;
+  return read_form(reader);
 };
 
 module.exports = { read_str };
