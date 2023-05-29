@@ -50,6 +50,33 @@ class MalVector extends MalValue {
   }
 }
 
+const partition = (list, partitionBy) => {
+  const partitionList = [];
+  for (let index = 0; index < list.length; index += 2) {
+    partitionList.push([list[index], list[index + 1]]);
+  }
+  return partitionList;
+};
+
+const convertIntoHashString = (list) => {
+  const result = [];
+  for (let index = 0; index < list.length; index += 2) {
+    const separator = index + 1 === list.length - 1 ? "" : ",";
+    result.push(`${list[index]} ${list[index + 1]}${separator}`);
+  }
+  return result;
+};
+
+class MalHashMap extends MalValue {
+  constructor(value) {
+    super(value);
+  }
+
+  pr_str() {
+    return "{" + convertIntoHashString(this.value).join(" ") + "}";
+  }
+}
+
 class MalNil extends MalValue {
   constructor() {
     super(null);
@@ -60,4 +87,11 @@ class MalNil extends MalValue {
   }
 }
 
-module.exports = { MalValue, MalSymbol, MalList, MalVector, MalNil };
+module.exports = {
+  MalValue,
+  MalSymbol,
+  MalList,
+  MalVector,
+  MalNil,
+  MalHashMap,
+};
