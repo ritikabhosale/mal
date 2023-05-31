@@ -9,6 +9,7 @@ const {
   MalNil,
 } = require("./types.js");
 const { Env } = require("./env.js");
+const { ns } = require("./core.js");
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -82,6 +83,11 @@ const EVAL = (ast, env) => {
         : ast.value[3]
         ? EVAL(ast.value[3], env)
         : new MalNil();
+    case "fn*":
+      return (exprs) => {
+        const newEnv = new Env(env, ast.value[1], exprs);
+        return EVAL(ast.value[2], newEnv);
+      };
   }
 
   const [fn, ...args] = eval_ast(ast, env).value;
@@ -92,10 +98,12 @@ const EVAL = (ast, env) => {
 const PRINT = (arg) => pr_str(arg);
 
 const env = new Env();
-env.set(new MalSymbol("+"), (...args) => args.reduce((a, b) => a + b));
-env.set(new MalSymbol("-"), (...args) => args.reduce((a, b) => a - b));
-env.set(new MalSymbol("*"), (...args) => args.reduce((a, b) => a * b));
-env.set(new MalSymbol("/"), (...args) => args.reduce((a, b) => a / b));
+
+for (const symbol in ns) {
+  env.set(new MalSymbol(symbol), ns[symbol]);
+}
+
+env.set(new MalSymbol("list"), (...args) => new MalList(args));
 
 const rep = (arg) => PRINT(EVAL(READ(arg), env));
 
