@@ -84,7 +84,7 @@ const EVAL = (ast, env) => {
         ? EVAL(ast.value[3], env)
         : new MalNil();
     case "fn*":
-      return (exprs) => {
+      return (...exprs) => {
         const newEnv = new Env(env, ast.value[1], exprs);
         return EVAL(ast.value[2], newEnv);
       };

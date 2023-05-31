@@ -32,6 +32,10 @@ class MalList extends MalValue {
   isEmpty() {
     return this.value.length === 0;
   }
+
+  count() {
+    return this.value.length;
+  }
 }
 
 class MalVector extends MalValue {
@@ -48,15 +52,15 @@ class MalVector extends MalValue {
       "]"
     );
   }
-}
 
-const partition = (list, partitionBy) => {
-  const partitionList = [];
-  for (let index = 0; index < list.length; index += 2) {
-    partitionList.push([list[index], list[index + 1]]);
+  isEmpty() {
+    return this.value.length === 0;
   }
-  return partitionList;
-};
+
+  count() {
+    return this.value.length;
+  }
+}
 
 const convertIntoHashString = (list) => {
   const result = [];

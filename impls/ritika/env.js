@@ -8,6 +8,13 @@ class Env {
     this.#binds = binds;
     this.#exprs = exprs;
     this.data = {};
+    this.#setbindArgsToExprs();
+  }
+
+  #setbindArgsToExprs() {
+    this.#binds?.value.forEach((bind, index) => {
+      this.set(bind, this.#exprs[index]);
+    });
   }
 
   set(symbol, value) {

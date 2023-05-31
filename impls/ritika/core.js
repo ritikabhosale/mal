@@ -36,6 +36,9 @@ const ns = {
   "<=": (...args) => isInAscendingOrder(args),
   ">": (...args) => isNextGreaterThanCurrent(args),
   "<": (...args) => isNextLesserThanCurrent(args),
+  "list?": (...args) => args[0] instanceof MalList,
+  "empty?": (...args) => args[0].isEmpty(),
+  count: (...args) => args[0].count(),
   list: (...args) => new MalList(args),
   prn: (...args) => {
     console.log(...args);
