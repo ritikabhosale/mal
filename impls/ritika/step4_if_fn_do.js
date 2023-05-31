@@ -103,8 +103,6 @@ for (const symbol in ns) {
   env.set(new MalSymbol(symbol), ns[symbol]);
 }
 
-env.set(new MalSymbol("list"), (...args) => new MalList(args));
-
 const rep = (arg) => PRINT(EVAL(READ(arg), env));
 
 const main = () => {
