@@ -92,7 +92,6 @@ const read_str = (str) => {
   const reader = new Reader(tokens);
 
   const a = read_form(reader);
-  console.log(a);
   return a;
 };
 
