@@ -105,6 +105,8 @@ for (const symbol in ns) {
 
 const rep = (arg) => PRINT(EVAL(READ(arg), env));
 
+rep("(def! not (fn* (a) (if a false true)))");
+
 const main = () => {
   rl.question("user> ", (input) => {
     try {
