@@ -18,6 +18,10 @@ class MalString extends MalValue {
   constructor(value) {
     super(value);
   }
+
+  count() {
+    return this.value.split("").length - 2;
+  }
 }
 
 class MalList extends MalValue {
@@ -70,9 +74,10 @@ class MalVector extends MalValue {
 
 const convertIntoHashString = (list) => {
   const result = [];
+  console.log(list);
   for (let index = 0; index < list.length; index += 2) {
     const separator = index + 1 === list.length - 1 ? "" : ",";
-    result.push(`${list[index]} ${list[index + 1]}${separator}`);
+    result.push(`${list[index].value} ${list[index + 1]}${separator}`);
   }
   return result;
 };
@@ -90,6 +95,10 @@ class MalHashMap extends MalValue {
 class MalNil extends MalValue {
   constructor() {
     super(null);
+  }
+
+  count() {
+    return 0;
   }
 
   pr_str() {
