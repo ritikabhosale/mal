@@ -24,6 +24,12 @@ class MalString extends MalValue {
   }
 }
 
+class MalKeyword extends MalValue {
+  constructor(value) {
+    super(value);
+  }
+}
+
 class MalList extends MalValue {
   constructor(value) {
     super(value);
@@ -114,4 +120,5 @@ module.exports = {
   MalNil,
   MalHashMap,
   MalString,
+  MalKeyword,
 };
