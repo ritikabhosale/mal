@@ -11,7 +11,6 @@ class Env {
     this.#exprs = exprs;
     this.data = {};
     this.#setbindArgsToExprs();
-    console.log(this);
   }
 
   #setbindArgsToExprs() {

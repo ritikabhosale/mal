@@ -95,7 +95,7 @@ const EVAL = (ast, env) => {
   return fn.apply(null, args);
 };
 
-const PRINT = (arg) => pr_str(arg);
+const PRINT = (arg) => pr_str(arg, true);
 
 const env = new Env();
 

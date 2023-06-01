@@ -4,6 +4,7 @@ const {
   MalVector,
   MalNil,
   MalHashMap,
+  MalString,
 } = require("./types.js");
 
 class Reader {
@@ -69,6 +70,7 @@ const read_atom = (reader) => {
   if (token === "true") return true;
   if (token === "false") return false;
   if (token === "nil") return new MalNil();
+  if (token.startsWith('"')) return new MalString(token);
 
   return new MalSymbol(token);
 };
