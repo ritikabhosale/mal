@@ -11,6 +11,7 @@ class Env {
     this.#exprs = exprs;
     this.data = {};
     this.#setbindArgsToExprs();
+    console.log(this);
   }
 
   #setbindArgsToExprs() {
@@ -31,7 +32,7 @@ class Env {
   }
 
   find(symbol) {
-    if (this.data[symbol.value]) {
+    if (this.data[symbol.value] !== undefined) {
       return this;
     }
     if (this.#outer) {

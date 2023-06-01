@@ -78,9 +78,10 @@ const EVAL = (ast, env) => {
       const elements = ast.value.slice(1);
       return evaluateForms(elements);
     case "if":
-      return !(EVAL(ast.value[1], env) instanceof MalNil)
+      const result = EVAL(ast.value[1], env);
+      return !(result instanceof MalNil || result === false)
         ? EVAL(ast.value[2], env)
-        : ast.value[3]
+        : ast.value[3] !== undefined
         ? EVAL(ast.value[3], env)
         : new MalNil();
     case "fn*":
@@ -91,7 +92,6 @@ const EVAL = (ast, env) => {
   }
 
   const [fn, ...args] = eval_ast(ast, env).value;
-
   return fn.apply(null, args);
 };
 
