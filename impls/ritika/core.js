@@ -1,5 +1,7 @@
 const assert = require("assert");
-const { MalList, MalNil, MalValue } = require("./types");
+const { MalList, MalNil, MalAtom } = require("./types");
+const { read_str } = require("./reader");
+const { pr_str } = require("./printer");
 
 const areAllEqual = (args) => {
   return args.every((item) => deepEquals(item, args[0]));
@@ -53,9 +55,22 @@ const ns = {
   count: (...args) => args[0].count(),
   list: (...args) => new MalList(args),
   prn: (...args) => {
-    console.log(...args);
+    const str = args.map((x) => pr_str(x, true)).join(" ");
+    console.log(str);
     return new MalNil();
   },
+  println: (...args) => {
+    const str = args.map((x) => pr_str(x, fasle)).join(" ");
+    console.log(str);
+    return new MalNil();
+  },
+  "pr-str": (...args) => args.map((x) => pr_str(x, true)).join(" "),
+  str: (...args) => args.map((x) => pr_str(x, false)).join(),
+  "read-string": (str) => read_str(str.value),
+  atom: (value) => new MalAtom(value),
+  "atom?": (value) => value instanceof MalAtom,
+  deref: (atom) => atom.deref(),
+  "reset!": (atom, value) => atom.reset(value),
 };
 
 module.exports = { ns };

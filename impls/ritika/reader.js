@@ -8,6 +8,12 @@ const {
   MalKeyword,
 } = require("./types.js");
 
+class CommentException extends Error {
+  constructor(commentMessage) {
+    this.commentMessage = commentMessage;
+  }
+}
+
 class Reader {
   constructor(tokens) {
     this.tokens = tokens;
@@ -62,8 +68,16 @@ const read_hash_map = (reader) => {
   return new MalHashMap(ast);
 };
 
+const createMalString = (str) => {
+  const value = str.replace(/\\(.)/g, (y, captured) =>
+    captured === "n" ? "\n" : captured
+  );
+  return new MalString(value);
+};
+
 const read_atom = (reader) => {
   const token = reader.next();
+
   if (token.match(/^-?[0-9]+$/)) {
     return parseInt(token);
   }
@@ -71,10 +85,15 @@ const read_atom = (reader) => {
   if (token === "true") return true;
   if (token === "false") return false;
   if (token === "nil") return new MalNil();
-  if (token.startsWith('"')) return new MalString(token);
+  if (token.startsWith('"')) return createMalString(token.slice(1, -1));
   if (token.startsWith(":")) return new MalKeyword(token);
 
   return new MalSymbol(token);
+};
+
+const prependSymbol = (reader, symbol) => {
+  reader.next();
+  return new MalList(new MalSymbol(symbol), read_form(reader));
 };
 
 const read_form = (reader) => {
@@ -86,6 +105,10 @@ const read_form = (reader) => {
       return read_vector(reader);
     case "{":
       return read_hash_map(reader);
+    case ":":
+      throw new CommentException(token);
+    case "@":
+      return prependSymbol(reader, "deref");
     default:
       return read_atom(reader);
   }

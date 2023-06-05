@@ -1,3 +1,9 @@
+const pr_str = (malValue, print_readably) => {
+  return malValue instanceof MalValue
+    ? malValue.pr_str(print_readably)
+    : malValue;
+};
+
 class MalValue {
   constructor(value) {
     this.value = value;
@@ -14,13 +20,46 @@ class MalSymbol extends MalValue {
   }
 }
 
+class MalAtom extends MalValue {
+  constructor(value) {
+    super(value);
+  }
+
+  pr_str(print_readably = false) {
+    return "atom" + pr_str(this.value, print_readably);
+  }
+
+  deref() {
+    return this.value;
+  }
+
+  reset(value) {
+    this.value = value;
+    return value;
+  }
+}
+
 class MalString extends MalValue {
   constructor(value) {
     super(value);
   }
 
+  pr_str(printReadably) {
+    if (printReadably) {
+      return (
+        '"' +
+        this.value
+          .replace(/\\/g, "\\\\")
+          .replace(/"/g, '\\"')
+          .replace(/\n/g, "\\n") +
+        '"'
+      );
+    }
+    return this.value.toString();
+  }
+
   count() {
-    return this.value.split("").length - 2;
+    return this.value.length;
   }
 }
 
@@ -134,4 +173,6 @@ module.exports = {
   MalString,
   MalKeyword,
   MalFunction,
+  MalAtom,
+  pr_str,
 };
