@@ -47,7 +47,12 @@ const handleFn = (ast, env) => {
 
   const doForms = new MalList([new MalSymbol("do"), ...body]);
 
-  return new MalFunction(doForms, binds, env);
+  const fn = (...exprs) => {
+    const newEnv = new Env(env, ast.value[1], exprs);
+    return EVAL(ast.value[2], newEnv);
+  };
+
+  return new MalFunction(doForms, binds, env, fn);
 };
 
 const handleLet = (ast, env) => {
@@ -128,6 +133,9 @@ const createReplEnv = () => {
   }
   env.set(new MalSymbol("eval"), (ast) => EVAL(ast, env));
   rep("(def! not (fn* (a) (if a false true)))");
+  rep(
+    '(def! load-file (fn* (f) (eval (read-string (str "(do " (slurp f) "\nnil)")))))'
+  );
 };
 
 const env = new Env();

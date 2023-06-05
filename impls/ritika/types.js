@@ -26,7 +26,7 @@ class MalAtom extends MalValue {
   }
 
   pr_str(print_readably = false) {
-    return "atom" + pr_str(this.value, print_readably);
+    return "atom " + pr_str(this.value, print_readably);
   }
 
   deref() {
@@ -36,6 +36,11 @@ class MalAtom extends MalValue {
   reset(value) {
     this.value = value;
     return value;
+  }
+
+  swap(fn, args) {
+    this.value = fn.apply(null, [this.value, ...args]);
+    return this.value;
   }
 }
 
@@ -119,7 +124,6 @@ class MalVector extends MalValue {
 
 const convertIntoHashString = (list) => {
   const result = [];
-  console.log(list);
   for (let index = 0; index < list.length; index += 2) {
     const separator = index + 1 === list.length - 1 ? "" : ",";
     result.push(`${list[index].value} ${list[index + 1]}${separator}`);
@@ -138,14 +142,19 @@ class MalHashMap extends MalValue {
 }
 
 class MalFunction extends MalValue {
-  constructor(ast, binds, env) {
+  constructor(ast, binds, env, fn) {
     super(ast);
     this.binds = binds;
     this.env = env;
+    this.fn = fn;
   }
 
   pr_str() {
     return "#<function>";
+  }
+
+  apply(_, args) {
+    return this.fn.apply(null, args);
   }
 }
 
