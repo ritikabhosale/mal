@@ -43,39 +43,62 @@ const isInAscendingOrder = (items) => {
 
 const ns = {
   "+": (...args) => args.reduce((a, b) => a + b),
+
   "-": (...args) => args.reduce((a, b) => a - b),
+
   "*": (...args) => args.reduce((a, b) => a * b),
+
   "/": (...args) => args.reduce((a, b) => a / b),
+
   "=": (...args) => areAllEqual(args),
+
   ">=": (...args) => isInDescendingOrder(args),
+
   "<=": (...args) => isInAscendingOrder(args),
+
   ">": (...args) => isNextGreaterThanCurrent(args),
+
   "<": (...args) => isNextLesserThanCurrent(args),
+
   "list?": (...args) => args[0] instanceof MalList,
+
   "empty?": (...args) => args[0].isEmpty(),
+
   count: (...args) => args[0].count(),
+
   list: (...args) => new MalList(args),
+
   prn: (...args) => {
     const str = args.map((x) => pr_str(x, true)).join(" ");
     console.log(str);
     return new MalNil();
   },
+
   println: (...args) => {
     const str = args.map((x) => pr_str(x, fasle)).join(" ");
     console.log(str);
     return new MalNil();
   },
-  "pr-str": (...args) => args.map((x) => pr_str(x, true)).join(" "),
-  str: (...args) => args.map((x) => pr_str(x, false)).join(),
-  "read-string": (str) => read_str(str.value),
+
   slurp: (fileName) =>
     new MalString(
       fs.readFileSync(fileName.pr_str(false), { encoding: "utf8" })
     ),
+
+  "pr-str": (...args) => args.map((x) => pr_str(x, true)).join(" "),
+
+  str: (...args) => args.map((x) => pr_str(x, false)).join(),
+
+  "read-string": (str) => read_str(str.value),
+
   atom: (value) => new MalAtom(value),
+
   "atom?": (value) => value instanceof MalAtom,
+
   deref: (atom) => atom.deref(),
+
   "reset!": (atom, value) => atom.reset(value),
+
   "swap!": (atom, fn, ...args) => atom.swap(fn, args),
 };
 
