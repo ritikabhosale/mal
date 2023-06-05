@@ -1,7 +1,8 @@
 const assert = require("assert");
-const { MalList, MalNil, MalAtom } = require("./types");
+const { MalList, MalNil, MalAtom, MalString } = require("./types");
 const { read_str } = require("./reader");
 const { pr_str } = require("./printer");
+const fs = require("fs");
 
 const areAllEqual = (args) => {
   return args.every((item) => deepEquals(item, args[0]));
@@ -67,6 +68,10 @@ const ns = {
   "pr-str": (...args) => args.map((x) => pr_str(x, true)).join(" "),
   str: (...args) => args.map((x) => pr_str(x, false)).join(),
   "read-string": (str) => read_str(str.value),
+  slurp: (fileName) =>
+    new MalString(
+      fs.readFileSync(fileName.pr_str(false), { encoding: "utf8" })
+    ),
   atom: (value) => new MalAtom(value),
   "atom?": (value) => value instanceof MalAtom,
   deref: (atom) => atom.deref(),

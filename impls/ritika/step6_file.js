@@ -126,7 +126,7 @@ const createReplEnv = () => {
   for (const symbol in ns) {
     env.set(new MalSymbol(symbol), ns[symbol]);
   }
-  env.set(new MalSymbol("eval", (ast) => EVAL(ast, env)));
+  env.set(new MalSymbol("eval"), (ast) => EVAL(ast, env));
   rep("(def! not (fn* (a) (if a false true)))");
 };
 
