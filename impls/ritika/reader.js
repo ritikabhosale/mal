@@ -8,12 +8,6 @@ const {
   MalKeyword,
 } = require("./types.js");
 
-class CommentException extends Error {
-  constructor(commentMessage) {
-    this.commentMessage = commentMessage;
-  }
-}
-
 class Reader {
   constructor(tokens) {
     this.tokens = tokens;
