@@ -35,7 +35,10 @@ const tokenize = (arg) => {
   const re =
     /[\s,]*(~@|[\[\]{}()'`~^@]|"(?:\\.|[^\\"])*"?|;.*|[^\s\[\]{}('"`,;)]*)/g;
 
-  return [...arg.matchAll(re)].map((x) => x[1]).slice(0, -1);
+  return [...arg.matchAll(re)]
+    .map((x) => x[1])
+    .slice(0, -1)
+    .filter((x) => !x.startsWith(";"));
 };
 
 const read_seq = (reader, symbol) => {
@@ -93,7 +96,7 @@ const read_atom = (reader) => {
 
 const prependSymbol = (reader, symbol) => {
   reader.next();
-  return new MalList(new MalSymbol(symbol), read_form(reader));
+  return new MalList([new MalSymbol(symbol), read_form(reader)]);
 };
 
 const read_form = (reader) => {
@@ -105,8 +108,6 @@ const read_form = (reader) => {
       return read_vector(reader);
     case "{":
       return read_hash_map(reader);
-    case ":":
-      throw new CommentException(token);
     case "@":
       return prependSymbol(reader, "deref");
     default:

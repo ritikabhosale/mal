@@ -87,7 +87,7 @@ const ns = {
 
   "pr-str": (...args) => args.map((x) => pr_str(x, true)).join(" "),
 
-  str: (...args) => args.map((x) => pr_str(x, false)).join(),
+  str: (...args) => new MalString(args.map((x) => pr_str(x, false)).join()),
 
   "read-string": (str) => read_str(str.value),
 
