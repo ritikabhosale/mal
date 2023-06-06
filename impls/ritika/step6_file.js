@@ -8,6 +8,7 @@ const {
   MalHashMap,
   MalNil,
   MalFunction,
+  MalString,
 } = require("./types.js");
 const { Env } = require("./env.js");
 const { ns } = require("./core.js");
@@ -132,6 +133,7 @@ const createReplEnv = () => {
     env.set(new MalSymbol(symbol), ns[symbol]);
   }
   env.set(new MalSymbol("eval"), (ast) => EVAL(ast, env));
+  env.set(new MalSymbol("*ARGV*"), new MalList(process.argv.slice(2)));
   rep("(def! not (fn* (a) (if a false true)))");
   rep(
     '(def! load-file (fn* (f) (eval (read-string (str "(do " (slurp f) "\nnil)")))))'
@@ -152,4 +154,13 @@ const main = () => {
   });
 };
 
-main();
+if (process.argv.length >= 3) {
+  // const args = Array.from(process.argv).slice(3);
+  // const malArgs = new MalList(args.map((x) => new MalString(x)));
+  // env.set(new MalSymbol("*ARGV*"), malArgs);
+  const code = '(load-file "' + process.argv[2] + '")';
+  rep(code);
+  rl.close();
+} else {
+  main();
+}
