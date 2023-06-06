@@ -1,5 +1,5 @@
 const assert = require("assert");
-const { MalList, MalNil, MalAtom, MalString } = require("./types");
+const { MalList, MalNil, MalAtom, MalString, MalVector } = require("./types");
 const { read_str } = require("./reader");
 const { pr_str } = require("./printer");
 const fs = require("fs");
@@ -100,6 +100,12 @@ const ns = {
   "reset!": (atom, value) => atom.reset(value),
 
   "swap!": (atom, fn, ...args) => atom.swap(fn, args),
+
+  cons: (value, list) => new MalList([value, ...list.value]),
+
+  concat: (...lists) => new MalList(lists.flatMap((x) => x.value)),
+
+  vec: (list) => new MalVector(list.value.slice()),
 };
 
 module.exports = { ns };

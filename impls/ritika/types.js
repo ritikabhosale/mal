@@ -14,6 +14,8 @@ class MalValue {
   }
 }
 
+class MalSequence extends MalValue {}
+
 class MalSymbol extends MalValue {
   constructor(value) {
     super(value);
@@ -74,18 +76,14 @@ class MalKeyword extends MalValue {
   }
 }
 
-class MalList extends MalValue {
+class MalList extends MalSequence {
   constructor(value) {
     super(value);
   }
 
-  pr_str() {
+  pr_str(print_readably) {
     return (
-      "(" +
-      this.value
-        .map((x) => (x instanceof MalValue ? x.pr_str() : x))
-        .join(" ") +
-      ")"
+      "(" + this.value.map((x) => pr_str(x, print_readably)).join(" ") + ")"
     );
   }
 
@@ -96,20 +94,20 @@ class MalList extends MalValue {
   count() {
     return this.value.length;
   }
+
+  beginsWith(symbol) {
+    return this.value.length > 0 && this.value[0].value === symbol;
+  }
 }
 
-class MalVector extends MalValue {
+class MalVector extends MalSequence {
   constructor(value) {
     super(value);
   }
 
-  pr_str() {
+  pr_str(print_readably) {
     return (
-      "[" +
-      this.value
-        .map((x) => (x instanceof MalValue ? x.pr_str() : x))
-        .join(" ") +
-      "]"
+      "[" + this.value.map((x) => pr_str(x, print_readably)).join(" ") + "]"
     );
   }
 
@@ -183,5 +181,6 @@ module.exports = {
   MalKeyword,
   MalFunction,
   MalAtom,
+  MalSequence,
   pr_str,
 };
