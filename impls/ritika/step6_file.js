@@ -155,9 +155,6 @@ const main = () => {
 };
 
 if (process.argv.length >= 3) {
-  // const args = Array.from(process.argv).slice(3);
-  // const malArgs = new MalList(args.map((x) => new MalString(x)));
-  // env.set(new MalSymbol("*ARGV*"), malArgs);
   const code = '(load-file "' + process.argv[2] + '")';
   rep(code);
   rl.close();
