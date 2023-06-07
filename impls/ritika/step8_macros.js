@@ -125,15 +125,51 @@ const handleDef = (ast, env) => {
   return env.get(ast.value[1]);
 };
 
+const handleDefMacro = (ast, env) => {
+  const macro = EVAL(ast.value[2], env);
+  macro.isMacro = true;
+
+  env.set(ast.value[1], macro);
+  return env.get(ast.value[1]);
+};
+
+const isMacroCall = (ast, env) => {
+  try {
+    return (
+      ast instanceof MalList &&
+      !ast.isEmpty() &&
+      ast.value[0] instanceof MalSymbol &&
+      env.get(ast.value[0]).isMacro
+    );
+  } catch {
+    return false;
+  }
+};
+
+const macroExpand = (ast, env) => {
+  while (isMacroCall(ast, env)) {
+    const macro = env.get(ast.value[0]);
+    ast = macro.apply(null, ast.value.slice(1));
+  }
+
+  return ast;
+};
+
 const EVAL = (ast, env) => {
   while (true) {
     if (!(ast instanceof MalList)) return eval_ast(ast, env);
 
     if (ast.isEmpty()) return ast;
 
+    ast = macroExpand(ast, env);
+
+    if (!(ast instanceof MalList)) return eval_ast(ast, env);
+
     switch (ast.value[0].value) {
       case "def!":
         return handleDef(ast, env);
+      case "defmacro!":
+        return handleDefMacro(ast, env);
       case "let*":
         [ast, env] = handleLet(ast, env);
         break;
@@ -153,6 +189,8 @@ const EVAL = (ast, env) => {
         break;
       case "quasiquoteexpand":
         return quasiquote(ast.value[1]);
+      case "macroexpand":
+        return macroExpand(ast.value[1], env);
       default:
         const [fn, ...args] = eval_ast(ast, env).value;
         if (fn instanceof MalFunction) {
@@ -178,6 +216,9 @@ const createReplEnv = () => {
   rep("(def! not (fn* (a) (if a false true)))");
   rep(
     '(def! load-file (fn* (f) (eval (read-string (str "(do " (slurp f) "\nnil)")))))'
+  );
+  rep(
+    "(defmacro! cond (fn* (& xs) (if (> (count xs) 0) (list 'if (first xs) (if (> (count xs) 1) (nth xs 1) (throw \"odd number of forms to cond\")) (cons 'cond (rest (rest xs)))))))"
   );
 };
 

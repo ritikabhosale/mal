@@ -106,6 +106,12 @@ const ns = {
   concat: (...lists) => new MalList(lists.flatMap((x) => x.value)),
 
   vec: (list) => new MalVector(list.value.slice()),
+
+  nth: (list, n) => list.nth(n),
+
+  first: (list) => list.first(),
+
+  rest: (list) => (list instanceof MalNil ? new MalList([]) : list.rest()),
 };
 
 module.exports = { ns };
